@@ -7,6 +7,7 @@ services:
     container_name: agenda_app
     volumes:
       - .:/var/www/html
+    command: sh start.sh
     networks:
       - agenda_network
 
