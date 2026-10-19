@@ -1,0 +1,48 @@
+services:
+  #php
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agenda_app
+    volumes:
+      - .:/var/www/html
+    networks:
+      - agenda_network
+
+  #nginx
+  web:
+    image: nginx:alpine
+    container_name: agenda_web
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf # injeta a conf do nginx
+    depends_on:
+      - app
+    networks:
+      - agenda_network
+
+  #mysql
+  db:
+    image: mysql:8.0
+    container_name: agenda_db
+    environment:
+      MYSQL_DATABASE: php_crud_agenda
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - agenda_network
+
+# rede em bridge
+networks:
+  agenda_network:
+    driver: bridge
+
+# mysql volume
+volumes:
+  db_data:
