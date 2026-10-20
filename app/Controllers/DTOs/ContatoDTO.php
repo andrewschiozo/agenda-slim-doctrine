@@ -11,7 +11,7 @@ class ContatoDTO
 {
     public ?int $id = null;
     public string $nome;
-    public ?string $dataNascimento = null;
+    public string $dataNascimento;
     public ?string $logradouro = null;
     public ?string $numero = null;
     public ?string $bairro = null;
@@ -24,7 +24,7 @@ class ContatoDTO
         $dto = new self();
         $dto->id = $dados['id'] ?? null;
         $dto->nome = $dados['nome'] ?? throw new InvalidArgumentException("O campo nome é obrigatório.");
-        $dto->dataNascimento = $dados['data_nascimento'] ?? null;
+        $dto->dataNascimento = $dados['data_nascimento'] ?? throw new InvalidArgumentException("O campo data de nascimento é obrigatório.");
         $dto->logradouro = $dados['logradouro'] ?? null;
         $dto->numero = $dados['numero'] ?? null;
         $dto->bairro = $dados['bairro'] ?? null;

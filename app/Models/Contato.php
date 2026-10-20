@@ -26,8 +26,8 @@ class Contato
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $endereco = null;
 
-    #[ORM\Column(name: 'data_nascimento', type: 'date', nullable: true)]
-    private ?DateTimeInterface $dataNascimento = null;
+    #[ORM\Column(name: 'data_nascimento', type: 'date')]
+    private DateTimeInterface $dataNascimento;
 
     public function getId(): ?int
     {
@@ -56,14 +56,14 @@ class Contato
         return $this;
     }
 
-    public function getDataNascimento(): ?DateTimeInterface
+    public function getDataNascimento(): DateTimeInterface
     {
         return $this->dataNascimento;
     }
 
-    public function setDataNascimento(?DataNascimentoVO $dataNascimento): self
+    public function setDataNascimento(DataNascimentoVO $dataNascimento): self
     {
-        $this->dataNascimento = $dataNascimento ? $dataNascimento->getData() : null;
+        $this->dataNascimento = $dataNascimento->getData();
         return $this;
     }
 
