@@ -46,7 +46,7 @@ $(document).ready(function() {
         e.preventDefault();
 
         const btnSalvar = $('#btnSalvar');
-        btnSalvar.prop('disabled', true).text('A gravar...');
+        btnSalvar.prop('disabled', true).text('Salvando...');
 
         // monta a url para criação/atualização
         const urlDestino = contatoId ? '/api/contatos/' + contatoId : '/api/contatos';
@@ -63,9 +63,9 @@ $(document).ready(function() {
             error: function(xhr) {
                 btnSalvar.prop('disabled', false).text('Salvar');
 
-                let msg = 'Ocorreu um erro ao gravar.';
-                if (xhr.responseJSON && xhr.responseJSON.mensagem) {
-                    msg = xhr.responseJSON.mensagem;
+                let msg = 'Ocorreu um erro ao salvar o registro.';
+                if (xhr.responseJSON && xhr.responseJSON.erro) {
+                    msg = xhr.responseJSON.erro;
                 }
                 showAlert(msg, 'error')
             }
