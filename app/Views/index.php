@@ -17,8 +17,8 @@
             <table class="table table-striped table-hover" id="tabelaContatos">
                 <thead>
                     <tr>
-                        <th>Nome</th>
-                        <th>Data de Nascimento</th>
+                        <th class="text-nowrap">Nome</th>
+                        <th class="text-nowrap">Data Nascimento</th>
                         <th class="text-end">Ações</th>
                     </tr>
                 </thead>

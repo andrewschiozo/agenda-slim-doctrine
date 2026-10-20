@@ -32,11 +32,16 @@ function renderizarTabela(dados) {
             dataFormatada = dataObj.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
         }
 
+        let nomeExibicao = contato.nome;
+        if (nomeExibicao.length > 30) {
+            nomeExibicao = nomeExibicao.substring(0, 30) + '...';
+        }
+
         const tr = `
             <tr>
-                <td class="align-middle">${contato.nome}</td>
-                <td class="align-middle">${dataFormatada}</td>
-                <td class="text-end">
+                <td class="align-middle text-nowrap">${nomeExibicao}</td>
+                <td class="align-middle text-nowrap">${dataFormatada}</td>
+                <td class="text-end text-nowrap">
                     <a href="/agenda/edit/${contato.id}" class="btn btn-sm btn-warning">Editar</a>
                     <button
                         class="btn btn-sm btn-danger btnConfirmDelete"
