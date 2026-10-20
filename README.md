@@ -75,15 +75,20 @@ vendor/bin/phpunit
 Embora este projeto tenha sido desenvolvido de forma enxuta para atender aos requisitos do teste, a arquitetura foi desenhada pensando em escalabilidade. Abaixo estão algumas reflexões que tive sobre possíveis problemas que até um CRUD pode enfrentar:
 
 **Como lidar com milhares de requisições de criação simultâneas?**
+
 Do jeito que tá, o banco VAI cair. O servidor VAI travar. Implementando uma **Fila de Mensageria** (RabbitMQ), o Controller da API pode só validar os dados e os colocar em uma fila, retornando sucesso imediato ao usuário. Um *worker* processa a fila e faz os inserts no MySQL de forma controlada.
 
 **Muitos usuários acessando a página principal de listagem ao mesmo tempo vai causar lentidão**
+
 Eu atacaria em duas frentes:
+
 1. **Cache:** Implementaria uma camada de cache (Redis) usando a biblioteca `symfony/cache` (já disponível no projeto). A query principal da listagem seria servida direto da memória, aliviando o banco de dados.
 2. **Otimização do Banco (Índices):** Evoluiria a estrutura do banco separando os campos do endereço (rua, bairro, cidade, UF) em colunas específicas ou em uma tabela relacional. Em seguida, aplicaria **Índices (Indexes)** em colunas que frequentemente sofrem buscas ou ordenações, como `cidade`, `uf` e extrairia o `ano_nascimento`.
 
 **Observabilidade em produção**  
+
 O *Error Middleware* do Slim pode capturar qualquer exceção não tratada, salvar um log com todo o contexto e integrar uma ferramenta de Observabilidade como o **New Relic** pode ajudar visualmente.
 
 **API aberta vs Segurança**  
+
 Se a aplicação precisasse receber milhares de tentativas de salvar contatos por segundo, convém adicionar um *middleware* de **Rate Limiting** no Slim 4, para limitar a quantidade de requests que um mesmo IP pode fazer por minuto. Na camada de infra, colocaria a aplicação atrás de um WAF (Web Application Firewall), como o Cloudflare, para mitigar ataques maliciosos antes mesmo de chegarem ao servidor PHP.
