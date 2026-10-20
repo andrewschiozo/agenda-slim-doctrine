@@ -42,7 +42,7 @@ class ContatoService
                 totalRegistros: $totalRegistros,
                 paginaAtual: $pagina,
                 registrosPorPagina: $limite,
-                totalPaginas: ($totalRegistros / $limite)
+                totalPaginas: ceil($totalRegistros / $limite)
             )
         );
     }
@@ -50,26 +50,26 @@ class ContatoService
     /**
      * Busca um contato por id
      * @param int $id
-     * @return Contato|null
+     * @return ContatoDTO|null
      */
-    public function buscarPorId(int $id): ?Contato
+    public function buscarPorId(int $id): ?ContatoDTO
     {
         $contato = $this->repository->findById($id);
         if ($contato && $contato->getDeletedAt() !== null) {
             return null;
         }
-        return $contato;
+        return $this->mapEntityToDTO($contato);
     }
 
     /**
      * Cria ou atualiza um contato
      * @param ContatoDTO $dto
      * @throws InvalidArgumentException
-     * @return Contato
+     * @return ContatoDTO
      */
-    public function salvar(ContatoDTO $dto): Contato
+    public function salvar(ContatoDTO $dto): ContatoDTO
     {
-        $contato = $dto->id ? $this->buscarPorId($dto->id) : new Contato();
+        $contato = $dto->id ? $this->repository->findById($dto->id) : new Contato();
         if (!$contato) {
             throw new InvalidArgumentException("Contato não encontrado.");
         }
@@ -77,7 +77,7 @@ class ContatoService
         $contato = $this->mapDTOToEntity($dto, $contato);
         $this->repository->save($contato);
 
-        return $contato;
+        return $this->mapEntityToDTO($contato);
     }
 
     /**
@@ -87,7 +87,7 @@ class ContatoService
      */
     public function excluir(int $id): void
     {
-        $contato = $this->buscarPorId($id);
+        $contato = $this->repository->findById($id);
         if ($contato) {
             $contato->setDeletedAt(new DateTime());
             $this->repository->save($contato);
@@ -104,7 +104,7 @@ class ContatoService
         $data = [
             'id' => $entity->getId(),
             'nome' => $entity->getNome(),
-            'data_nascimento' => $entity->getDataNascimento()->format('Y-m-d H:i:s'),
+            'data_nascimento' => $entity->getDataNascimento()->format('Y-m-d'),
             'logradouro' => $entity->getEndereco() 
         ];
         return ContatoDTO::fromArray($data);
@@ -118,24 +118,21 @@ class ContatoService
      */
     private function mapDTOToEntity(ContatoDTO $dto, Contato $entity): Contato
     {
+        $dataNascimento = new DataNascimentoVO($dto->dataNascimento);
+
         $endereco = null;
         if ($dto->logradouro || $dto->numero || $dto->bairro || $dto->cidade || $dto->uf || $dto->cep) {
-            $endereco = (new EnderecoVO(
+            $endereco = new EnderecoVO(
                 $dto->logradouro,
                 $dto->numero,
                 $dto->bairro, 
                 $dto->cidade,
                 $dto->uf,
                 $dto->cep
-            ))->getEnderecoFormatado();
+            );
         }
 
-        $dataNascimento = null;
-        if (!empty($dto->dataNascimento)) {
-            $dataNascimento = (new DataNascimentoVO($dto->dataNascimento))->getData();
-        }
-
-        $entity->setNome(empty(trim($dto->nome)));
+        $entity->setNome(trim($dto->nome));
         $entity->setEndereco($endereco);
         $entity->setDataNascimento($dataNascimento);
 
