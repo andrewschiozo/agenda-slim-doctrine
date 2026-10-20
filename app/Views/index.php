@@ -17,7 +17,6 @@
                     <tr>
                         <th>Nome</th>
                         <th>Data de Nascimento</th>
-                        <th>Endereço</th>
                         <th class="text-end">Ações</th>
                     </tr>
                 </thead>
