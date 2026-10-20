@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 
     <script src="/assets/js/jquery.min.js"></script>
-    <script type="module" src="/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 
@@ -26,8 +26,11 @@
     </nav>
 
     <div class="container">
+        <div id="alertContainer"></div>
         <?php echo $content ?? '' ?>
     </div>
+
+    <script src="/assets/js/app.js"></script>
 
     <?php echo $scripts ?? '' ?>
 </body>
