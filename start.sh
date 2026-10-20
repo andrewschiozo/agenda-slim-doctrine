@@ -22,5 +22,8 @@ while (!\$ready && \$maxTries > 0) {
 # cria/atualiza os esquemas do banco
 php app/Commands/db_migrate.php
 
+# popula o banco com a seed
+php app/Commands/db_migrate.php
+
 # inicia o server PHP-FPM
 php-fpm

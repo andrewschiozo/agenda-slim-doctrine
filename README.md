@@ -42,11 +42,15 @@ O projeto foi construído utilizando:
    ```bash
    php app/Commands/db_migrate.php
    ```
-7. Inicie o servidor embutido do PHP apontando para a pasta `public`:
+7. (OPCIONAL) Popular o banco com dados aleatórios
+   ```bash
+   php app/Commands/db_seed.php
+   ```
+8. Inicie o servidor embutido do PHP apontando para a pasta `public`:
    ```bash
    php -S localhost:8000 -t public
    ```
-8. Acesse no navegador: **http://localhost:8000/agenda/index**
+9. Acesse no navegador: **http://localhost:8000/agenda/index**
 
 
 ## Testes Automatizados (PHPUnit)
