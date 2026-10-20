@@ -63,4 +63,33 @@
   </div>
 </div>
 
+<!-- Modal de Visualização -->
+<div class="modal fade" id="viewContactModal" tabindex="-1" aria-labelledby="viewContactLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewContactLabel">Detalhes do Contato</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <small class="text-muted d-block">Nome</small>
+          <strong id="viewModalNome" class="fs-5"></strong>
+        </div>
+        <div class="mb-3">
+          <small class="text-muted d-block">Data de Nascimento</small>
+          <span id="viewModalDataNascimento"></span>
+        </div>
+        <div>
+          <small class="text-muted d-block">Endereço</small>
+          <span id="viewModalEndereco"></span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="/assets/agenda/index.js"></script>

@@ -37,12 +37,25 @@ function renderizarTabela(dados) {
             nomeExibicao = nomeExibicao.substring(0, 30) + '...';
         }
 
+        const endereco = contato.logradouro ? contato.logradouro : '';
+
         const tr = `
             <tr>
                 <td class="align-middle text-nowrap">${nomeExibicao}</td>
                 <td class="align-middle text-nowrap">${dataFormatada}</td>
                 <td class="text-end text-nowrap">
+                    <button 
+                        class="btn btn-sm text-primary-emphasis bg-primary-subtle border border-primary-subtle btnViewContact" 
+                        data-nome="${contato.nome}" 
+                        data-nascimento="${dataFormatada}" 
+                        data-endereco="${endereco}"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#viewContactModal">
+                        Detalhe
+                    </button>
+
                     <a href="/agenda/edit/${contato.id}" class="btn btn-sm btn-warning">Editar</a>
+
                     <button
                         class="btn btn-sm btn-danger btnConfirmDelete"
                         data-id="${contato.id}"
@@ -88,7 +101,23 @@ function excluirContato(id, nome = "") {
 $(document).ready(function () {
     carregarContatos(1);
 
-    // event no botão de excluir
+    // event no botão visualizar
+    $(document).on('click', '.btnViewContact', function () {
+        const nome = $(this).data('nome');
+        const dataNascimento = $(this).data('nascimento');
+        const endereco = $(this).data('endereco');
+
+        $('#viewModalNome').text(nome);
+        $('#viewModalDataNascimento').text(dataNascimento);
+
+        $('#viewModalEndereco').text('Contato sem endereço cadastrado').addClass('text-muted fst-italic');
+
+        if (endereco && endereco.trim() !== '') {
+            $('#viewModalEndereco').text(endereco).removeClass('text-muted fst-italic');
+        }
+    });
+
+    // event no botão excluir
     $(document).on('click', '.btnConfirmDelete', function () {
         const contatoNome = $(this).data('nome');
         const contatoId = $(this).data('id');
