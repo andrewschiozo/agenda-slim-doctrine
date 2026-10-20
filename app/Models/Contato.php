@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Traits\DBAuditoriaTrait;
+use App\ValueObjects\DataNascimentoVO;
+use App\ValueObjects\EnderecoVO;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeInterface;
 
@@ -39,7 +41,7 @@ class Contato
 
     public function setNome(string $nome): self
     {
-        $this->nome = $nome;
+        $this->nome = $this->formatToDB($nome);
         return $this;
     }
 
@@ -48,9 +50,9 @@ class Contato
         return $this->endereco;
     }
 
-    public function setEndereco(?string $endereco): self
+    public function setEndereco(?EnderecoVO $endereco): self
     {
-        $this->endereco = $endereco;
+        $this->endereco = $endereco ? $this->formatToDB($endereco->getEnderecoFormatado()) : null;
         return $this;
     }
 
@@ -59,9 +61,21 @@ class Contato
         return $this->dataNascimento;
     }
 
-    public function setDataNascimento(?DateTimeInterface $dataNascimento): self
+    public function setDataNascimento(?DataNascimentoVO $dataNascimento): self
     {
-        $this->dataNascimento = $dataNascimento;
+        $this->dataNascimento = $dataNascimento ? $dataNascimento->getData() : null;
         return $this;
+    }
+
+    /**
+     * Higieniza uma string removendo excesso de espaços e transformando em uppercase
+     *
+     * @param string $content
+     * @return string
+     */
+    private function formatToDB(string $content): string
+    {
+        $higienizado = trim(preg_replace('/\s+/', ' ', $content));
+        return mb_strtoupper($higienizado, 'UTF-8');
     }
 }
