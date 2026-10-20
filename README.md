@@ -3,6 +3,10 @@
 Este projeto é uma aplicação web para o gerenciamento de contatos. A implementação atende rigorosamente a todos os critérios de aceitação e especificações técnicas descritas nos documentos de referência: `user_story.docx`, `requisitos_de_sistema.pdf` e `rodando_a_aplicacao.txt`.
 O CRUD poderia ser feito com apenas 1 arquivo `.php`, qualquer impressão de "overengineering" pode ser vista como apresentação da separação de responsabilidades na arquitetura sugerida nas documentações. Considere ler o item **Melhoria Contínua**, no final do documento.
 
+| Desktop |Mobile |
+| :---: | :---: |
+| <img src="docs/img/desktop.gif" height="450" alt="Demonstração Desktop"> | <img src="docs/img/mobile.gif" height="450" alt="Demonstração Mobile"> |
+
 ## Arquitetura e Decisões Técnicas
 
 O projeto foi construído utilizando:
