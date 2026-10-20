@@ -25,6 +25,7 @@ class ContatoRepository
             ->where('c.deletedAt IS NULL')
             ->setMaxResults($limit)   // LIMIT
             ->setFirstResult($offset) // OFFSET
+            ->orderBy('c.nome')
             ->getQuery()
             ->getResult();
     }
