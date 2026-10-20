@@ -10,7 +10,7 @@
     <meta name="csrf-name" content="<?php echo $csrfName ?? '' ?>">
     <meta name="csrf-value" content="<?php echo $csrfValue ?? '' ?>">
 
-    <title>Agenda de Contactos</title>
+    <title>Agenda de Contatos</title>
 
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 

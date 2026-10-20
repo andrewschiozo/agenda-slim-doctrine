@@ -29,7 +29,7 @@ function renderizarTabela(dados) {
         let dataFormatada = '-';
         if (contato.dataNascimento) {
             const dataObj = new Date(contato.dataNascimento);
-            dataFormatada = dataObj.toLocaleDateString('pt-BR',{ timeZone: 'UTC' });
+            dataFormatada = dataObj.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
         }
 
         const tr = `
@@ -38,7 +38,14 @@ function renderizarTabela(dados) {
                 <td class="align-middle">${dataFormatada}</td>
                 <td class="text-end">
                     <a href="/agenda/edit/${contato.id}" class="btn btn-sm btn-warning">Editar</a>
-                    <button class="btn btn-sm btn-danger" onclick="excluirContato(${contato.id}, '${contato.nome}')">Excluir</button>
+                    <button
+                        class="btn btn-sm btn-danger btnConfirmDelete"
+                        data-id="${contato.id}"
+                        data-nome="${contato.nome}"
+                        data-bs-toggle="modal"
+                        data-bs-target="#confirmDeleteModal">
+                        Excluir
+                    </button>
                 </td>
             </tr>
         `;
@@ -60,21 +67,55 @@ function renderizarPaginacao(metadados) {
 }
 
 function excluirContato(id, nome = "") {
-    if (confirm('Tem a certeza que deseja excluir este contato?')) {
-        $.ajax({
-            url: '/api/contatos/' + id,
-            method: 'DELETE',
-            success: function (response) {
-                showAlert(`Contato ${nome} excluído`, 'warning')
-                carregarContatos(paginaAtual);
-            },
-            error: function () {
-                showAlert('Erro ao excluir o contato.', 'danger');
-            }
-        });
-    }
+    $.ajax({
+        url: '/api/contatos/' + id,
+        method: 'DELETE',
+        success: function (response) {
+            showAlert(`Contato ${nome} excluído`, 'warning')
+            carregarContatos(paginaAtual);
+        },
+        error: function () {
+            showAlert('Erro ao excluir o contato.', 'danger');
+        }
+    });
 }
 
 $(document).ready(function () {
     carregarContatos(1);
+
+    // event no botão de excluir
+    $(document).on('click', '.btnConfirmDelete', function () {
+        const contatoNome = $(this).data('nome');
+        const contatoId = $(this).data('id');
+        $('#modalContactName').text(contatoNome);
+
+        // injeta o data no botão de confirmação
+        $('#btnConfirmDelete').data('id', contatoId)
+        $('#btnConfirmDelete').data('nome', contatoNome)
+    });
+
+    // event no checkbox para confirmar exclusão
+    $('#chkConfirmExclusion').on('change', function () {
+        $('#btnConfirmDelete').prop('disabled', !this.checked);
+    });
+
+    // event para resetar a modal
+    $('#confirmDeleteModal').on('hidden.bs.modal', function () {
+        $('#chkConfirmExclusion').prop('checked', false);
+        $('#btnConfirmDelete').prop('disabled', true);
+        $('#btnConfirmDelete').data('id', '')
+        $('#btnConfirmDelete').data('nome', '')
+        $('#modalContactName').text('');
+    });
+
+    // event na confirmação da exclusão
+    $('#btnConfirmDelete').on('click', function () {
+
+        excluirContato($(this).data('id'), $(this).data('nome'))
+
+        // fecha o modal
+        const modalEl = document.getElementById('confirmDeleteModal');
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        modalInstance.hide();
+    });
 });
