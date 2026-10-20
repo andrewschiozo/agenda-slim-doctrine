@@ -22,10 +22,24 @@ class AgendaAPIController
         $params = $request->getQueryParams();
         $pagina = isset($params['pagina']) ? (int) $params['pagina'] : 1;
 
-        $resultado = $this->service->listar($pagina);
+        $content = $this->service->listar($pagina);
 
-        $response->getBody()->write(json_encode($resultado));
-        return $response->withHeader('Content-Type', 'application/json');
+        return $this->response($response, 200, $content);
+    }
+
+    /**
+     * Busca um contato por id.
+     */
+    public function buscar(Request $request, Response $response, array $args): Response
+    {
+        $id = (int) $args['id'];
+        $contato = $this->service->buscarPorId($id);
+
+        if (!$contato) {
+            $this->response($response, 404);
+        }
+
+        return $this->response($response, 200, $contato);
     }
 
     public function salvar(Request $request, Response $response, array $args): Response
@@ -35,16 +49,20 @@ class AgendaAPIController
             $dto = ContatoDTO::fromArray($dados);
 
             $dto->id = isset($args['id']) ? (int) $args['id'] : $dto->id;
-            $this->service->salvar($dto);
 
-            return $response->withHeader('Content-Type', 'application/json')->withStatus($dto->id ? 200 : 201);
-            
+            $content = $this->service->salvar($dto);
+
+            return $this->response(
+                $response,
+                $dto->id ? 204 : 201,
+                $content
+            );
         } catch (InvalidArgumentException $e) {
-            $response->getBody()->write(json_encode([
-                'erro' => $e->getMessage()
-            ]));
-
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+            return $this->response(
+                $response,
+                400,
+                ['erro' => $e->getMessage()]
+            );
         }
     }
 
@@ -52,7 +70,15 @@ class AgendaAPIController
     {
         $id = (int) $args['id'];
         $this->service->excluir($id);
+        return $this->response($response, 204, null);
+    }
 
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(204);
+    private function response(Response $response, int $httpCode = 200, object|array|null $content = null): Response
+    {
+        if ($content) {
+            $response->getBody()->write(json_encode($content));
+        }
+
+        return $response->withHeader('Content-Type', 'application/json')->withStatus($httpCode);
     }
 }
