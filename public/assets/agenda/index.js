@@ -7,6 +7,7 @@ function carregarContatos(pagina) {
         dataType: 'json',
         success: function (response) {
             paginaAtual = response.metadados.pagina_atual;
+            renderizarCardTotal(response.metadados);
             renderizarTabela(response.dados);
             renderizarPaginacao(response.metadados);
         },
@@ -14,6 +15,10 @@ function carregarContatos(pagina) {
             showAlert('Erro ao carregar os contatos.', 'danger');
         }
     });
+}
+
+function renderizarCardTotal(metadados) {
+    $('#cardTotalContatos').text(metadados.totalRegistros);    
 }
 
 function renderizarTabela(dados) {
